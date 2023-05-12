@@ -267,14 +267,14 @@ def main(go):
                 if event.key == pygame.K_UP:
                     current_piece.rotation += 1
                     if not(valid_space(current_piece, grid)):
-                        current_piece -= 1
+                        current_piece.rotation -= 1
 
         shape_position = convert_shape_format(current_piece)
 
         for i in range(len(shape_position)):
             x, y = shape_position[i]
             if y > -1:
-                grid[y][x] =  current_piece.color
+                grid[y][x] = current_piece.color
 
         if change_piece:
             for position in shape_position:
