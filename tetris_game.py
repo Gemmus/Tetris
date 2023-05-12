@@ -122,7 +122,7 @@ Teewee = [['.....',
            '.....']]
 
 shapes = [RhodeIsland_Z, Cleveland_Z, Hero, Smashboy, BlueRicky, OrangeRicky, Teewee]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(0, 240, 1), (240, 35, 0), (2, 240, 240), (240, 240, 0), (4, 47, 240), (240, 160, 0), (159, 52, 240)]
 
 
 class Piece(object):
@@ -237,10 +237,10 @@ def main(go):
         draw_window(go, grid)
 
 
-def main_menu(start):
-    main(start)
+def main_menu(steady):
+    main(steady)
 
 
-win = pygame.display.set_mode((s_width, s_height))
+ready = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption("Tetris")
-main_menu(win)
+main_menu(ready)
