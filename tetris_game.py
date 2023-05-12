@@ -124,6 +124,10 @@ Teewee = [['.....',
 shapes = [RhodeIsland_Z, Cleveland_Z, Hero, Smashboy, BlueRicky, OrangeRicky, Teewee]
 shape_colors = [(0, 240, 1), (240, 35, 0), (2, 240, 240), (240, 240, 0), (4, 47, 240), (240, 160, 0), (159, 52, 240)]
 
+############################
+#   Classes and Functions  #
+############################
+
 
 class Piece(object):
     def __init__(self, x, y, shape):
@@ -156,8 +160,8 @@ def convert_shape_format(shape):
 
     for i, pos in enumerate(positions):
         positions[i] = (pos[0] - 2, pos[1] - 4)
-
     return positions
+
 
 def valid_space(shape, grid):
     accepted_position = [[(ii, i) for ii in range(10) if grid[i][ii] == (0, 0, 0)] for i in range(20)]
@@ -200,7 +204,20 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    pass
+    font = pygame.font.SysFont('arial', 30)
+    label = font.render('Next Shape', 1, (255, 255, 255))
+
+    x_position = top_left_x + play_width - 500
+    y_position = top_left_y + play_height / 2 - 250
+    formation = shape.shape[shape.rotation % len(shape.shape)]
+
+    for i, line in enumerate(formation):
+        row = list(line)
+        for ii, column in enumerate(row):
+            if column == '0':
+                pygame.draw.rect(surface, shape.color, (x_position + ii * block_size, y_position + i * block_size, block_size, block_size), 0)
+
+    surface.blit(label, (x_position + 10, y_position - 50))
 
 
 def draw_window(surface, grid):
@@ -220,7 +237,7 @@ def draw_window(surface, grid):
 
     draw_grid(surface, grid)
 
-    pygame.display.update()
+    # pygame.display.update()
 
 
 def main(go):
@@ -233,7 +250,7 @@ def main(go):
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    fall_speed = 0.27
+    fall_speed = 0.5
 
     while run:
         grid = create_grid(locked_positions)
@@ -285,6 +302,8 @@ def main(go):
             change_piece = False
 
         draw_window(go, grid)
+        draw_next_shape(next_piece, go)
+        pygame.display.update()
 
         if check_lost(locked_positions):
             run = False
