@@ -6,7 +6,7 @@ pygame.font.init()
 #######################
 #   Global Variable   #
 #######################
-s_width = 800
+s_width = 900
 s_height = 700
 play_width = 300  # meaning 300 // 10 = 30 width per block
 play_height = 600  # meaning 600 // 20 = 20 height per block
@@ -41,15 +41,15 @@ Cleveland_Z = [['.....',
                 '.0...',
                 '.....']]
 
-Hero = [['..0..',
-         '..0..',
-         '..0..',
-         '..0..',
+Hero = [['.....',
+         '.....',
+         '.0000',
+         '.....',
          '.....'],
-        ['.....',
-         '0000.',
-         '.....',
-         '.....',
+        ['..0..',
+         '..0..',
+         '..0..',
+         '..0..',
          '.....']]
 
 Smashboy = [['.....',
@@ -158,8 +158,8 @@ def convert_shape_format(shape):
             if column == '0':
                 positions.append((shape.x + ii, shape.y + i))
 
-    for i, pos in enumerate(positions):
-        positions[i] = (pos[0] - 2, pos[1] - 4)
+    for i, position in enumerate(positions):
+        positions[i] = (position[0] - 2, position[1] - 4)
     return positions
 
 
@@ -189,10 +189,17 @@ def get_shape():
 
 
 def draw_text_middle(surface, text, size, color):
-    font = pygame.font.SysFont('arial', size, bold=True)
+    font = pygame.font.SysFont('consolas', size, bold=True)
     label = font.render(text, 1, color)
 
-    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2), (top_left_y + play_height / 2 - label.get_height() / 2) - 100))
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2) - 20, (top_left_y + play_height / 2 - label.get_height() / 2) - 150))
+
+
+def draw_text_under(surface, text, size, color):
+    font = pygame.font.SysFont('consolas', size, bold=True)
+    label = font.render(text, 1, color)
+
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width()/2), (top_left_y + play_height / 2 - label.get_height() / 2) - 80))
 
 
 def draw_grid(surface, grid):
@@ -224,8 +231,8 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.SysFont('arial', 30)
-    label = font.render('Next Shape:', 1, (255, 255, 255))
+    font = pygame.font.SysFont('consolas', 28, bold=True)
+    label = font.render('Next Shape:', 1, (154, 248, 109))
 
     x_position = top_left_x + play_width - 500
     y_position = top_left_y + play_height / 2 - 250
@@ -235,9 +242,9 @@ def draw_next_shape(shape, surface):
         row = list(line)
         for ii, column in enumerate(row):
             if column == '0':
-                pygame.draw.rect(surface, shape.color, (x_position + ii * block_size, y_position + i * block_size, block_size, block_size), 0)
+                pygame.draw.rect(surface, shape.color, (x_position + ii * block_size, y_position + i * block_size - 20, block_size, block_size), 0)
 
-    surface.blit(label, (x_position + 10, y_position - 50))
+    surface.blit(label, (x_position + 10, y_position - 40))
 
 
 def draw_window(surface, grid, score, hour, minute, second, level):
@@ -249,29 +256,29 @@ def draw_window(surface, grid, score, hour, minute, second, level):
     surface.fill((0, 0, 0))
 
     pygame.font.init()
-    font = pygame.font.SysFont('arial', 60)
-    game_label = font.render('TETRIS', 1, (255, 255, 255))
+    font = pygame.font.SysFont('arial', 80, bold=True)
+    game_label = font.render('TETRIS', 1, (71, 245, 241))
 
-    surface.blit(game_label, (top_left_x + play_width / 2 - game_label.get_width() / 2, 20))
+    surface.blit(game_label, (top_left_x + play_width / 2 - game_label.get_width() / 2, 12))
 
-    font = pygame.font.SysFont('arial', 30)
-    level_label1 = font.render('Level: ', 1, (255, 255, 255))
-    level_label2 = font.render(str(level), 1, (255, 255, 255))
-    score_label1 = font.render('Score: ', 1, (255, 255, 255))
-    score_label2 = font.render(str(score), 1, (255, 255, 255))
-    time_label1 = font.render('Time: ', 1, (255, 255, 255))
-    time_label2 = font.render(f'{str(hour)} h {str(minute)} min {str(second)} s', 1, (255, 255, 255))
-    highest_score_label1 = font.render('Highest Score: ', 1, (255, 255, 255))
-    highest_score_label2 = font.render(str(highest_score), 1, (255, 255, 255))
+    font = pygame.font.SysFont('consolas', 26, bold=True)
+    level_label1 = font.render('Level: ', 1, (249, 232, 108))
+    level_label2 = font.render(str(level), 1, (249, 232, 108))
+    score_label1 = font.render('Score: ', 1, (221, 104, 192))
+    score_label2 = font.render(str(score), 1, (221, 104, 192))
+    time_label1 = font.render('Time: ', 1, (142, 211, 244))
+    time_label2 = font.render(f'{str(hour)} h {str(minute)} min {str(second)} s', 1, (142, 211, 244))
+    highest_score_label1 = font.render('Highest Score: ', 1, (243, 164, 68))
+    highest_score_label2 = font.render(str(highest_score), 1, (243, 164, 68))
 
     surface.blit(level_label1, (x_position + 10, y_position))
     surface.blit(level_label2, (x_position + 10, y_position + 32))
-    surface.blit(score_label1, (x_position + 10, y_position + 70))
-    surface.blit(score_label2, (x_position + 10, y_position + 102))
-    surface.blit(time_label1, (x_position + 535, y_position + 70))
-    surface.blit(time_label2, (x_position + 535, y_position + 102))
-    surface.blit(highest_score_label1, (x_position + 535, y_position - 300))
-    surface.blit(highest_score_label2, (x_position + 535, y_position - 268))
+    surface.blit(score_label1, (x_position + 10, y_position + 80))
+    surface.blit(score_label2, (x_position + 10, y_position + 112))
+    surface.blit(time_label1, (x_position + 535, y_position + 80))
+    surface.blit(time_label2, (x_position + 535, y_position + 112))
+    surface.blit(highest_score_label1, (x_position + 535, y_position - 290))
+    surface.blit(highest_score_label2, (x_position + 535, y_position - 258))
 
     for i in range(len(grid)):
         for ii in range(len(grid[i])):
@@ -294,7 +301,6 @@ def time_converter(raw_time):
 
 def scoring_calculator(inc, level):
     addition = 0
-
     if level == 0 or level == 1:
         if inc == 1:
             addition += 100
@@ -370,7 +376,7 @@ def main(go):
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
-    fall_speed = 0.5
+    fall_speed = 0.25
     level_time = 0
     score = 0
     raw_time = 0
@@ -383,15 +389,15 @@ def main(go):
         level_time += clock.get_rawtime()
         raw_time += clock.get_rawtime()
         hour, new_minute, second = time_converter(raw_time)
-        if (new_minute - old_minute) >= 2:
+        if (new_minute - old_minute) >= 4:
             level += 1
-            old_minute += 2
+            old_minute += 4
         clock.tick()
 
         if level_time/1000 > 5:
             level_time = 0
             if fall_speed > 0.15:
-                fall_time -= 0.005
+                fall_time -= 0.5
 
         if fall_time/1000 > fall_speed:
             fall_time = 0
@@ -417,6 +423,13 @@ def main(go):
                     current_piece.y += 1
                     if not(valid_space(current_piece, grid)):
                         current_piece.y -= 1
+                if event.key == pygame.K_SPACE:
+                    i = 10
+                    while i >= 1:
+                        current_piece.y += i
+                        if not (valid_space(current_piece, grid)):
+                            current_piece.y -= i
+                        i -= 1
                 if event.key == pygame.K_UP:
                     current_piece.rotation += 1
                     if not(valid_space(current_piece, grid)):
@@ -444,7 +457,8 @@ def main(go):
         pygame.display.update()
 
         if check_lost(locked_positions):
-            draw_text_middle(go, "You lost", 80, (255, 255, 255))
+            draw_text_middle(go, "You lost", 100, (255, 255, 255))
+            draw_text_under(go, f'Final Score: {score}', 50, (255, 255, 255))
             pygame.display.update()
             pygame.time.delay(1500)
             run = False
@@ -455,7 +469,8 @@ def main_menu(steady):
     run = True
     while run:
         steady.fill((0, 0, 0))
-        draw_text_middle(steady, 'Press Any Key To Start', 60, (255, 255, 255))
+        draw_text_middle(steady, 'Press Any Key To Start', 60, (243, 164, 68))
+        draw_text_under(steady, 'UP - rotate, DOWN - move down, LEFT - move left, RIGHT - move right, SPACE - put down', 16, (243, 164, 68))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
