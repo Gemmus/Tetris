@@ -294,49 +294,51 @@ def time_converter(raw_time):
 
 def scoring_calculator(inc, level):
     addition = 0
-    if inc == 1:
-        if level == 0 or level == 1:
+
+    if level == 0 or level == 1:
+        if inc == 1:
             addition += 100
-        elif level == 2 or level == 3:
-            addition += 200
-        elif level == 4 or level == 5:
-            addition += 300
-        elif level == 6 or level == 7:
+        elif inc == 2:
             addition += 400
-        elif level >= 8:
-            addition += 500
-    elif inc == 2:
-        if level == 0 or level == 1:
-            addition += 400
-        elif level == 2 or level == 3:
-            addition += 800
-        elif level == 4 or level == 5:
-            addition += 1200
-        elif level == 6 or level == 7:
-            addition += 1600
-        elif level >= 8:
-            addition += 2000
-    elif inc == 3:
-        if level == 0 or level == 1:
+        elif inc == 3:
             addition += 900
-        elif level == 2 or level == 3:
-            addition += 1800
-        elif level == 4 or level == 5:
-            addition += 2700
-        elif level == 6 or level == 7:
-            addition += 3600
-        elif level >= 8:
-            addition += 4500
-    elif inc == 4:
-        if level == 0 or level == 1:
+        elif inc == 4:
             addition += 2000
-        elif level == 2 or level == 3:
+    elif level == 2 or level == 3:
+        if inc == 1:
+            addition += 200
+        elif inc == 2:
+            addition += 800
+        elif inc == 3:
+            addition += 1800
+        elif inc == 4:
             addition += 4000
-        elif level == 4 or level == 5:
+    elif level == 4 or level == 5:
+        if inc == 1:
+            addition += 300
+        elif inc == 2:
+            addition += 1200
+        elif inc == 3:
+            addition += 2700
+        elif inc == 4:
             addition += 6000
-        elif level == 6 or level == 7:
+    elif level == 6 or level == 7:
+        if inc == 1:
+            addition += 400
+        elif inc == 2:
+            addition += 1600
+        elif inc == 3:
+            addition += 3600
+        elif inc == 4:
             addition += 8000
-        elif level >= 8:
+    elif level >= 8:
+        if inc == 1:
+            addition += 500
+        elif inc == 2:
+            addition += 2000
+        elif inc == 3:
+            addition += 4500
+        elif inc == 4:
             addition += 10000
     return addition
 
@@ -389,7 +391,7 @@ def main(go):
         if level_time/1000 > 5:
             level_time = 0
             if fall_speed > 0.15:
-                fall_time = 0.15
+                fall_time -= 0.005
 
         if fall_time/1000 > fall_speed:
             fall_time = 0
