@@ -241,26 +241,33 @@ def draw_next_shape(shape, surface):
 
 
 def draw_window(surface, grid, score, time):
+    highest_score = display_max_score()
+
+    x_position = top_left_x + play_width - 500
+    y_position = top_left_y + play_height / 2
+
     surface.fill((0, 0, 0))
 
     pygame.font.init()
     font = pygame.font.SysFont('arial', 60)
-    label = font.render('TETRIS', 1, (255, 255, 255))
+    game_label = font.render('TETRIS', 1, (255, 255, 255))
 
-    surface.blit(label, (top_left_x + play_width / 2 - label.get_width() / 2, 20))
+    surface.blit(game_label, (top_left_x + play_width / 2 - game_label.get_width() / 2, 20))
 
     font = pygame.font.SysFont('arial', 30)
     score_label1 = font.render('Score: ', 1, (255, 255, 255))
     score_label2 = font.render(str(score), 1, (255, 255, 255))
     time_label1 = font.render('Time: ', 1, (255, 255, 255))
     time_label2 = font.render(str(time), 1, (255, 255, 255))
-    x_position = top_left_x + play_width - 500
-    y_position = top_left_y + play_height / 2
+    highest_score_label1 = font.render('Highest Score: ', 1, (255, 255, 255))
+    highest_score_label2 = font.render(str(highest_score), 1, (255, 255, 255))
 
     surface.blit(score_label1, (x_position + 10, y_position + 20))
     surface.blit(score_label2, (x_position + 10, y_position + 52))
     surface.blit(time_label1, (x_position + 535, y_position + 20))
     surface.blit(time_label2, (x_position + 535, y_position + 52))
+    surface.blit(highest_score_label1, (x_position + 535, y_position - 300))
+    surface.blit(highest_score_label2, (x_position + 535, y_position - 268))
 
     for i in range(len(grid)):
         for ii in range(len(grid[i])):
@@ -283,6 +290,24 @@ def time_converter(raw_time):
         minute = 0
         hour += 1
     return f'{hour} h {minute} min {second} s'
+
+
+def scoring_table(new_score):
+    score = display_max_score()
+
+    with open('scores.txt', 'w') as f:
+        if int(score) < new_score:
+            f.write(str(new_score))
+        else:
+            f.write(str(score))
+
+
+def display_max_score():
+    with open('scores.txt', 'r') as f:
+        lines = f.readlines()
+        score = lines[0].strip()
+
+    return score
 
 
 def main(go):
@@ -368,8 +393,7 @@ def main(go):
             pygame.display.update()
             pygame.time.delay(1500)
             run = False
-
-    pygame.display.quit()
+            scoring_table(score)
 
 
 def main_menu(steady):
