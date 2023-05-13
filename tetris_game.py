@@ -225,7 +225,7 @@ def clear_rows(grid, locked):
 
 def draw_next_shape(shape, surface):
     font = pygame.font.SysFont('arial', 30)
-    label = font.render('Next Shape', 1, (255, 255, 255))
+    label = font.render('Next Shape:', 1, (255, 255, 255))
 
     x_position = top_left_x + play_width - 500
     y_position = top_left_y + play_height / 2 - 250
@@ -240,7 +240,7 @@ def draw_next_shape(shape, surface):
     surface.blit(label, (x_position + 10, y_position - 50))
 
 
-def draw_window(surface, grid, score, time):
+def draw_window(surface, grid, score, hour, minute, second, level):
     highest_score = display_max_score()
 
     x_position = top_left_x + play_width - 500
@@ -255,17 +255,21 @@ def draw_window(surface, grid, score, time):
     surface.blit(game_label, (top_left_x + play_width / 2 - game_label.get_width() / 2, 20))
 
     font = pygame.font.SysFont('arial', 30)
+    level_label1 = font.render('Level: ', 1, (255, 255, 255))
+    level_label2 = font.render(str(level), 1, (255, 255, 255))
     score_label1 = font.render('Score: ', 1, (255, 255, 255))
     score_label2 = font.render(str(score), 1, (255, 255, 255))
     time_label1 = font.render('Time: ', 1, (255, 255, 255))
-    time_label2 = font.render(str(time), 1, (255, 255, 255))
+    time_label2 = font.render(f'{str(hour)} h {str(minute)} min {str(second)} s', 1, (255, 255, 255))
     highest_score_label1 = font.render('Highest Score: ', 1, (255, 255, 255))
     highest_score_label2 = font.render(str(highest_score), 1, (255, 255, 255))
 
-    surface.blit(score_label1, (x_position + 10, y_position + 20))
-    surface.blit(score_label2, (x_position + 10, y_position + 52))
-    surface.blit(time_label1, (x_position + 535, y_position + 20))
-    surface.blit(time_label2, (x_position + 535, y_position + 52))
+    surface.blit(level_label1, (x_position + 10, y_position))
+    surface.blit(level_label2, (x_position + 10, y_position + 32))
+    surface.blit(score_label1, (x_position + 10, y_position + 70))
+    surface.blit(score_label2, (x_position + 10, y_position + 102))
+    surface.blit(time_label1, (x_position + 535, y_position + 70))
+    surface.blit(time_label2, (x_position + 535, y_position + 102))
     surface.blit(highest_score_label1, (x_position + 535, y_position - 300))
     surface.blit(highest_score_label2, (x_position + 535, y_position - 268))
 
@@ -279,17 +283,62 @@ def draw_window(surface, grid, score, time):
 
 
 def time_converter(raw_time):
-    second = 0
-    second += int(raw_time / 1000)
-    minute = 0
-    hour = 0
-    if second >= 60:
-        second = 0
-        minute += 1
-    if minute >= 60:
-        minute = 0
-        hour += 1
-    return f'{hour} h {minute} min {second} s'
+    count = int(raw_time / 1000)
+    hour = int(count / 3600)
+    count -= hour * 3600
+    minute = int(count / 60)
+    count -= minute * 60
+    second = count
+    return hour, minute, second
+
+
+def scoring_calculator(inc, level):
+    addition = 0
+    if inc == 1:
+        if level == 0 or level == 1:
+            addition += 100
+        elif level == 2 or level == 3:
+            addition += 200
+        elif level == 4 or level == 5:
+            addition += 300
+        elif level == 6 or level == 7:
+            addition += 400
+        elif level >= 8:
+            addition += 500
+    elif inc == 2:
+        if level == 0 or level == 1:
+            addition += 400
+        elif level == 2 or level == 3:
+            addition += 800
+        elif level == 4 or level == 5:
+            addition += 1200
+        elif level == 6 or level == 7:
+            addition += 1600
+        elif level >= 8:
+            addition += 2000
+    elif inc == 3:
+        if level == 0 or level == 1:
+            addition += 900
+        elif level == 2 or level == 3:
+            addition += 1800
+        elif level == 4 or level == 5:
+            addition += 2700
+        elif level == 6 or level == 7:
+            addition += 3600
+        elif level >= 8:
+            addition += 4500
+    elif inc == 4:
+        if level == 0 or level == 1:
+            addition += 2000
+        elif level == 2 or level == 3:
+            addition += 4000
+        elif level == 4 or level == 5:
+            addition += 6000
+        elif level == 6 or level == 7:
+            addition += 8000
+        elif level >= 8:
+            addition += 10000
+    return addition
 
 
 def scoring_table(new_score):
@@ -306,13 +355,12 @@ def display_max_score():
     with open('scores.txt', 'r') as f:
         lines = f.readlines()
         score = lines[0].strip()
-
     return score
 
 
 def main(go):
     locked_positions = {}
-    grid = create_grid(locked_positions)
+    create_grid(locked_positions)
 
     change_piece = False
     run = True
@@ -324,16 +372,21 @@ def main(go):
     level_time = 0
     score = 0
     raw_time = 0
+    level = 0
+    old_minute = 0
 
     while run:
         grid = create_grid(locked_positions)
         fall_time += clock.get_rawtime()
         level_time += clock.get_rawtime()
         raw_time += clock.get_rawtime()
-        time = time_converter(raw_time)
+        hour, new_minute, second = time_converter(raw_time)
+        if (new_minute - old_minute) >= 2:
+            level += 1
+            old_minute += 2
         clock.tick()
 
-        if level_time/1000 > 5 :
+        if level_time/1000 > 5:
             level_time = 0
             if fall_speed > 0.15:
                 fall_time = 0.15
@@ -375,16 +428,16 @@ def main(go):
                 grid[y][x] = current_piece.color
 
         if change_piece:
-            score += 15
             for position in shape_position:
                 p = (position[0], position[1])
                 locked_positions[p] = current_piece.color
             current_piece = next_piece
             next_piece = get_shape()
             change_piece = False
-            score += clear_rows(grid, locked_positions) * 100
+            inc = clear_rows(grid, locked_positions)
+            score += scoring_calculator(inc, level)
 
-        draw_window(go, grid, score, time)
+        draw_window(go, grid, score, hour, new_minute, second, level)
         draw_next_shape(next_piece, go)
         pygame.display.update()
 
@@ -400,7 +453,7 @@ def main_menu(steady):
     run = True
     while run:
         steady.fill((0, 0, 0))
-        draw_text_middle(steady, 'Press Any Key To Play', 60, (255, 255, 255))
+        draw_text_middle(steady, 'Press Any Key To Start', 60, (255, 255, 255))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
