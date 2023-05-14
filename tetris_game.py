@@ -6,6 +6,7 @@ pygame.font.init()
 ########################
 #   Global Variables   #
 ########################
+
 s_width = 900
 s_height = 700
 play_width = 300  # meaning 300 // 10 = 30 width per block
