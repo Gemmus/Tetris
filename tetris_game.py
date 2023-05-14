@@ -3,9 +3,9 @@ import random
 
 pygame.font.init()
 
-#######################
-#   Global Variable   #
-#######################
+########################
+#   Global Variables   #
+########################
 s_width = 900
 s_height = 700
 play_width = 300  # meaning 300 // 10 = 30 width per block
@@ -124,10 +124,10 @@ Teewee = [['.....',
 shapes = [RhodeIsland_Z, Cleveland_Z, Hero, Smashboy, BlueRicky, OrangeRicky, Teewee]
 shape_colors = [(0, 240, 1), (240, 35, 0), (2, 240, 240), (240, 240, 0), (4, 47, 240), (240, 160, 0), (159, 52, 240)]
 
-############################
-#   Classes and Functions  #
-############################
 
+#######################
+#   Class for Blocks  #
+#######################
 
 class Piece(object):
     def __init__(self, x, y, shape):
@@ -137,6 +137,10 @@ class Piece(object):
         self.color = shape_colors[shapes.index(shape)]
         self.rotation = 0
 
+
+#################
+#   Functions   #
+#################
 
 def create_grid(locked_positions={}):
     grid = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
@@ -365,6 +369,10 @@ def display_max_score():
         score = lines[0].strip()
     return score
 
+
+######################
+#   Main Programme   #
+######################
 
 def main(go):
     locked_positions = {}
